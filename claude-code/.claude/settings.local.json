@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "mcp__r-btw__btw_tool_session_package_info",
-      "mcp__ide__executeCode",
-      "Bash(Rscript:*)"
-    ]
-  }
-}
