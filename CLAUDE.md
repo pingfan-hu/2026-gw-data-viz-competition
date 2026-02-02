@@ -55,8 +55,10 @@ Rscript code/loop-clothing-viz.R
 - 13 rows have missing demographic data
 - Column `Did you bring donations with you today?` → `brought_donations`
 
-## Licensing Requirements
+## Licensing
 
-**License:** CC BY-NC 4.0 (noncommercial only)
+**Code:** MIT License (see `LICENSE` file)
 
-**Required attribution:** GW Office of Sustainability (2025). *The Loop Data for GW LAI Data Visualization Competition* [Data set]. https://gwu.box.com/s/498wga8hci1wuxqigjeluwoalvhq39z9
+**Data:** The dataset is licensed under CC BY-NC 4.0 (noncommercial only) by GW Office of Sustainability and is NOT covered by the MIT License.
+
+**Required data attribution:** GW Office of Sustainability (2025). *The Loop Data for GW LAI Data Visualization Competition* [Data set]. https://gwu.box.com/s/498wga8hci1wuxqigjeluwoalvhq39z9
