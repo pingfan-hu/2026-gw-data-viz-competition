@@ -11,10 +11,10 @@ library(patchwork)
 project_root <- "/Users/pingfan/Documents/Code/GW Data Visualization Competition 2026"
 excel_path <- file.path(project_root, "data", "loop-data-ldw-2026.xlsx")
 csv_path <- file.path(project_root, "data", "loop-data.csv")
-plots_dir <- file.path(project_root, "plots")
+plot_dir <- file.path(project_root, "plot")
 
-# Create plots directory if it doesn't exist
-dir.create(plots_dir, showWarnings = FALSE)
+# Create plot directory if it doesn't exist
+dir.create(plot_dir, showWarnings = FALSE)
 
 # ==============================================================================
 # Check Excel sheets and read data
@@ -35,7 +35,13 @@ cat("Data saved to:", csv_path, "\n")
 # ==============================================================================
 # Data preview and cleaning
 # ==============================================================================
-cat("\nData dimensions:", nrow(loop_data), "rows x", ncol(loop_data), "columns\n")
+cat(
+  "\nData dimensions:",
+  nrow(loop_data),
+  "rows x",
+  ncol(loop_data),
+  "columns\n"
+)
 cat("Column names:\n")
 print(names(loop_data))
 
@@ -53,8 +59,18 @@ loop_data <- loop_data %>%
   )
 
 # Define item columns
-item_cols <- c("tops", "collared_shirts", "sweaters", "pants", "skirts",
-               "shorts", "dresses", "outerwear", "shoes", "accessories")
+item_cols <- c(
+  "tops",
+  "collared_shirts",
+  "sweaters",
+  "pants",
+  "skirts",
+  "shorts",
+  "dresses",
+  "outerwear",
+  "shoes",
+  "accessories"
+)
 
 # ==============================================================================
 # Plot 1: Seasonal Item Trends (Line/Area Chart)
@@ -81,10 +97,16 @@ month_order <- loop_data %>%
   arrange(month) %>%
   pull(month_label)
 
-monthly_totals$month_label <- factor(monthly_totals$month_label, levels = month_order)
+monthly_totals$month_label <- factor(
+  monthly_totals$month_label,
+  levels = month_order
+)
 
 # Create line chart with 2 lines
-p1 <- ggplot(monthly_totals, aes(x = month_label, y = count, color = type, group = type)) +
+p1 <- ggplot(
+  monthly_totals,
+  aes(x = month_label, y = count, color = type, group = type)
+) +
   geom_line(linewidth = 1) +
   geom_point(size = 3) +
   scale_color_manual(values = c("Taken" = "#377eb8", "Donated" = "#4daf4a")) +
@@ -109,11 +131,18 @@ cat("Creating Plot 2: Item Totals...\n")
 # Calculate total items taken across all visits
 item_totals <- loop_data %>%
   summarise(across(all_of(item_cols), ~ sum(.x, na.rm = TRUE))) %>%
-  pivot_longer(cols = everything(), names_to = "item", values_to = "total_count") %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = "item",
+    values_to = "total_count"
+  ) %>%
   mutate(item_label = str_replace_all(item, "_", " ") %>% str_to_title())
 
 # Create bar chart
-p2 <- ggplot(item_totals, aes(x = reorder(item_label, total_count), y = total_count)) +
+p2 <- ggplot(
+  item_totals,
+  aes(x = reorder(item_label, total_count), y = total_count)
+) +
   geom_col(fill = "#66c2a5") +
   geom_text(aes(label = total_count), hjust = -0.1, size = 3.5) +
   coord_flip() +
@@ -148,12 +177,25 @@ donation_by_demo <- loop_data %>%
     .groups = "drop"
   )
 
-p3a <- ggplot(donation_by_demo, aes(x = reorder(demographics, donation_rate), y = donation_rate, fill = demographics)) +
+p3a <- ggplot(
+  donation_by_demo,
+  aes(
+    x = reorder(demographics, donation_rate),
+    y = donation_rate,
+    fill = demographics
+  )
+) +
   geom_col(show.legend = FALSE) +
-  geom_text(aes(label = sprintf("%.1f%%", donation_rate)), hjust = -0.1, size = 3.5) +
+  geom_text(
+    aes(label = sprintf("%.1f%%", donation_rate)),
+    hjust = -0.1,
+    size = 3.5
+  ) +
   coord_flip() +
   scale_fill_brewer(palette = "Set2") +
-  scale_y_continuous(limits = c(0, max(donation_by_demo$donation_rate) * 1.15)) +
+  scale_y_continuous(
+    limits = c(0, max(donation_by_demo$donation_rate) * 1.15)
+  ) +
   labs(
     title = "Donation Rate by Demographic",
     x = NULL,
@@ -178,11 +220,13 @@ p3b <- ggplot(donation_breakdown, aes(x = 2, y = n, fill = brought_donations)) +
   geom_col(width = 1) +
   coord_polar(theta = "y") +
   xlim(0.5, 2.5) +
-  scale_fill_manual(values = c(
-    "No" = "#e41a1c",
-    "Donated at blue bin" = "#377eb8",
-    "Yes" = "#4daf4a"
-  )) +
+  scale_fill_manual(
+    values = c(
+      "No" = "#e41a1c",
+      "Donated at blue bin" = "#377eb8",
+      "Yes" = "#4daf4a"
+    )
+  ) +
   labs(
     title = "Donation Behavior Breakdown",
     fill = "Donation Type"
@@ -199,7 +243,8 @@ p3b <- ggplot(donation_breakdown, aes(x = 2, y = n, fill = brought_donations)) +
 # ==============================================================================
 cat("Combining all panels into dashboard...\n")
 
-combined_dashboard <- (p1 | p2) / (p3a | p3b) +
+combined_dashboard <- (p1 | p2) /
+  (p3a | p3b) +
   plot_annotation(
     title = "The Loop Clothing Exchange Dashboard",
     subtitle = "Customer behavior and donation patterns, Jan-Oct 2025",
@@ -210,7 +255,13 @@ combined_dashboard <- (p1 | p2) / (p3a | p3b) +
     )
   )
 
-ggsave(file.path(plots_dir, "dashboard.png"), combined_dashboard, width = 16, height = 12, dpi = 300)
+ggsave(
+  file.path(plot_dir, "loop-clothing-viz.png"),
+  combined_dashboard,
+  width = 16,
+  height = 12,
+  dpi = 300
+)
 
 # ==============================================================================
 # Summary
@@ -220,4 +271,4 @@ cat("Visualizations complete!\n")
 cat("========================================\n")
 cat("\nOutput files:\n")
 cat("  - data/loop-data.csv (converted data)\n")
-cat("  - plots/dashboard.png\n")
+cat("  - plot/loop-clothing-viz.png\n")
