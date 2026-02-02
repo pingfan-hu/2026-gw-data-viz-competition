@@ -8,10 +8,9 @@ library(patchwork)
 # ==============================================================================
 # Setup paths
 # ==============================================================================
-project_root <- "/Users/pingfan/Documents/Code/GW Data Visualization Competition 2026"
-excel_path <- file.path(project_root, "data", "loop-data-ldw-2026.xlsx")
-csv_path <- file.path(project_root, "data", "loop-data.csv")
-plot_dir <- file.path(project_root, "plot")
+excel_path <- file.path("data", "loop-data-ldw-2026.xlsx")
+csv_path <- file.path("data", "loop-data.csv")
+plot_dir <- file.path("plot")
 
 # Create plot directory if it doesn't exist
 dir.create(plot_dir, showWarnings = FALSE)
